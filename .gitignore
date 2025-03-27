@@ -1,0 +1,28 @@
+# Virtual environment
+venv/
+backend-env/
+.env
+
+# Byte-compiled / cached files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Django stuff
+db.sqlite3
+media/
+staticfiles/
+
+# Logs
+*.log
+logs/
+
+# VS Code
+.vscode/
+
+# macOS system files
+.DS_Store
+
+# Python virtual environment config
+pip-log.txt
+pip-delete-this-directory.txt
