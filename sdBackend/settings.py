@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -99,6 +103,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# env's data read 
+# sent through whatsApp
+FRONTEND_URL = os.getenv("FRONTEND_URL")
+BACKEND_URL = os.getenv("BACKEND_URL")
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
