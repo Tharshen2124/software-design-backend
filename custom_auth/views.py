@@ -3,31 +3,51 @@ from django.contrib.auth import logout as django_logout
 from django.conf import settings
 from django.http import JsonResponse
 from supabase_config.supabase_client import get_supabase, SUPABASE_REDIRECT_PATH
+from django.views.decorators.http import require_GET
 
-def oauth_login(request) :
+def oauth_login(request):
     supabase = get_supabase(request)
-    redirect_url = f"{settings.BACKEND_URL}{SUPABASE_REDIRECT_PATH}"
 
     response = supabase.auth.sign_in_with_oauth({
-        "provider" : "google",
-        "options" : {"redirect_to":redirect_url}
+        "provider": "google",
+        "options": {"redirect_to": "http://localhost:8000/auth/callback"}
     })
 
-    return redirect(response.url) # this will output a url
-
-def oauth_logout(request) :
-    request.session.flush()
-    django_logout(request)
-    return redirect(settings.FRONTEND_URL)
+    print(response.url)
+    return redirect(response.url)
 
 def oauth_callback(request):
     supabase = get_supabase(request)
-    full_url = request.build_absolute_uri()
-
+    code = request.GET.get('code')
+    
     try:
+        # Exchange authorization code for session
+        supabase.auth.exchange_code_for_session(code)
         session = supabase.auth.get_session()
-        user = supabase.auth.get_user()
-        return redirect(f"{settings.BACKEND_URL}/hehe?token={session.access_token}")
-
+        
+        # Redirect to frontend with token
+        frontend_url = settings.FRONTEND_URL
+        redirect_url = f"{frontend_url}/auth/callback?token={session.access_token}"
+        return redirect(redirect_url)
+        
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=400)
+        frontend_url = settings.FRONTEND_URL
+        redirect_url = f"{frontend_url}/auth/callback?error={str(e)}"
+        return redirect(redirect_url)
+
+def oauth_logout(request) :
+    supabase = get_supabase(request)
+    request.session.flush()
+    django_logout(request)
+    response = supabase.auth.sign_out()
+    
+    return JsonResponse ({
+        "message": "Successfully logged out.",
+        "response": response
+    })
+
+@require_GET
+def get_current_user(request):
+    supabase = get_supabase(request)
+    user = supabase.auth.get_user()
+    return JsonResponse({"user": user})
