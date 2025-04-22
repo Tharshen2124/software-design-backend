@@ -21,18 +21,14 @@ def oauth_callback(request):
     code = request.GET.get('code')
     
     try:
-        # Exchange authorization code for session
-        supabase.auth.exchange_code_for_session(code)
+        supabase.auth.exchange_code_for_session({"auth_code": code})
         session = supabase.auth.get_session()
         
-        # Redirect to frontend with token
-        frontend_url = settings.FRONTEND_URL
-        redirect_url = f"{frontend_url}/auth/callback?token={session.access_token}"
+        redirect_url = f"{settings.FRONTEND_URL}/auth/callback?token={session.access_token}"
         return redirect(redirect_url)
         
     except Exception as e:
-        frontend_url = settings.FRONTEND_URL
-        redirect_url = f"{frontend_url}/auth/callback?error={str(e)}"
+        redirect_url = f"{settings.FRONTEND_URL}/auth/callback?error={str(e)}"
         return redirect(redirect_url)
 
 def oauth_logout(request) :
