@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "corsheaders",
     'custom_auth',
+    'community_posts',
 ]
 
 MIDDLEWARE = [
