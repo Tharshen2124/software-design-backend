@@ -23,7 +23,7 @@ def posts_list_create(request):
         res = supabase.table('posts').insert(data).execute()
         return JsonResponse(res.data[0], status=201)
     
-    res = supabase.table('posts').select('*').execute()
+    res = supabase.table('posts').select('*, user_id:users(*)').execute()
     return JsonResponse({'posts': res.data})
 
 @csrf_exempt
@@ -49,7 +49,6 @@ def post_comments(request, post_id):
         res = supabase.table('comments').insert(data).execute()
         return JsonResponse(res.data[0], status=201)
     
-    # GET remains unchanged
     res = supabase.table('comments').select('*').eq('post_id', post_id).execute()
     return JsonResponse({'comments': res.data})
     
