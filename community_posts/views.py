@@ -29,10 +29,12 @@ def posts_list_create(request):
 @csrf_exempt
 def post_detail(request, post_id):
     if request.method == 'GET':
-        res = supabase.table('posts').select('*').eq('id', post_id).execute()
-        if not res.data:
+        post_res = supabase.table('posts').select('*, user_id:users(*), comments(*)').eq('id', post_id).execute()
+        
+        if not post_res.data:
             raise Http404("Post not found")
-        return JsonResponse(res.data[0])
+            
+        return JsonResponse(post_res.data[0])
     
     elif request.method == 'DELETE':
         supabase.table('posts').delete().eq('id', post_id).execute()
@@ -43,12 +45,9 @@ def post_comments(request, post_id):
     if request.method == 'POST':
         data = {
             'post_id': post_id,
-            'user_id': request.POST.get('user_id'),  # Now matches posts_list_create
+            'user_id': request.POST.get('user_id'),
             'comment_description': request.POST.get('comment')
         }
         res = supabase.table('comments').insert(data).execute()
         return JsonResponse(res.data[0], status=201)
-    
-    res = supabase.table('comments').select('*').eq('post_id', post_id).execute()
-    return JsonResponse({'comments': res.data})
     
