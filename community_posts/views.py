@@ -30,14 +30,14 @@ def posts_list_create(request):
 @csrf_exempt
 def post_detail(request, post_id):
     if request.method == 'GET':
-        # Simple post retrieval without joins
-        post_res = supabase.table('posts').select('*').eq('id', post_id).execute()
+        # Get post with user info (profile picture and name)
+        post_res = supabase.table('posts').select('*, users(profile_picture, full_name)').eq('id', post_id).execute()
         
         if not post_res.data:
             raise Http404("Post not found")
         
-        # Get comments separately
-        comments_res = supabase.table('comments').select('*').eq('post_id', post_id).execute()
+        # Get comments with their user info
+        comments_res = supabase.table('comments').select('*, users(profile_picture, full_name)').eq('post_id', post_id).execute()
         
         # Combine the data
         result = post_res.data[0]
@@ -58,8 +58,12 @@ def post_comments(request, post_id):
             'comment_description': request.POST.get('comment')
         }
         res = supabase.table('comments').insert(data).execute()
-        return JsonResponse(res.data[0], status=201)
+        
+        # Get the newly created comment with user details
+        comment_with_user = supabase.table('comments').select('*, users(profile_picture, full_name)').eq('id', res.data[0]['id']).execute()
+        
+        return JsonResponse(comment_with_user.data[0], status=201)
     
-    # Simple comment retrieval 
-    comments_res = supabase.table('comments').select('*').eq('post_id', post_id).execute()
+    # Get comments with user profile information
+    comments_res = supabase.table('comments').select('*, users(profile_picture, full_name)').eq('post_id', post_id).execute()
     return JsonResponse({'comments': comments_res.data})
