@@ -23,8 +23,8 @@ def posts_list_create(request):
         res = supabase.table('posts').insert(data).execute()
         return JsonResponse(res.data[0], status=201)
     
-    # Simplest approach - just get posts without joins
-    res = supabase.table('posts').select('*').execute()
+    
+    res = supabase.table('posts').select('*, users(profile_picture, full_name)').execute()
     return JsonResponse({'posts': res.data})
 
 @csrf_exempt
