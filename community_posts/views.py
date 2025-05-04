@@ -53,9 +53,9 @@ def post_detail(request, post_id):
 def post_comments(request, post_id):
     if request.method == 'POST':
         data = {
-            'post_id': post_id,
+            'post_id': str(post_id),
             'user_id': request.POST.get('user_id'),
-            'comment_description': request.POST.get('comment')
+            'comment_description': request.POST.get('comment_description')
         }
         res = supabase.table('comments').insert(data).execute()
         
