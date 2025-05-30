@@ -2,9 +2,11 @@ import json
 from django.http import HttpResponse, JsonResponse
 from .invitationManager import InvitationManager
 from django.views.decorators.csrf import csrf_exempt
+from clients.supabase_client import supabase
+
+manager = InvitationManager() # make it global
 
 class InvitationAdapter:
-
     @staticmethod
     @csrf_exempt
     def createInvitation(request):
@@ -15,14 +17,18 @@ class InvitationAdapter:
         
         # if valid data
         email = data.get("email")
-        link = data.get("link")
+        role = data.get("role")
 
         # error handling if there's no valid response
-        if not email or not link:
+        if not email or not role:
             return JsonResponse({"error": "Missing data"}, status=400)
         
-        # will return boolean
-        manager = InvitationManager()
+        
+        manager.create_invitation(email,role)
+
+        response = supabase.table('invitations').select('invitation_id').eq('email', email).execute()
+        link = response.data[0]['invitation_id']
+
         isSuccess = manager.send_invitation(email, link)
 
         if isSuccess:
