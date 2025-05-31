@@ -2,7 +2,7 @@ from django.shortcuts import redirect
 from django.contrib.auth import logout as django_logout
 from django.conf import settings
 from django.http import JsonResponse
-from supabase_config.supabase_client import get_supabase, SUPABASE_REDIRECT_PATH
+from clients.supabase_client import get_supabase, SUPABASE_REDIRECT_PATH
 from django.views.decorators.http import require_GET
 
 def oauth_login(request):
