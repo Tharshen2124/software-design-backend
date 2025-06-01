@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'custom_auth',
     'community_posts',
+    'complaints',
 ]
 
 MIDDLEWARE = [
