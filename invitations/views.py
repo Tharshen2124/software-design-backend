@@ -1,10 +1,12 @@
 import json
+import requests
 from django.http import HttpResponse, JsonResponse
+from custom_auth.views import oauth_login
 from .invitationManager import InvitationManager
 from django.views.decorators.csrf import csrf_exempt
 from clients.supabase_client import supabase
 
-manager = InvitationManager() # make it global
+manager = InvitationManager(supabase) # make it global
 
 class InvitationAdapter:
     @staticmethod
@@ -36,3 +38,17 @@ class InvitationAdapter:
         
         else:
             return JsonResponse({"error": "Failed to send invitation"}, status=500)
+        
+    def use_invitation(request):
+
+        invitation_id = request.GET.get('invitation_id')
+
+        # validate invitation_id
+        is_valid = manager.validate_invitation(invitation_id)
+
+        if not is_valid:
+            return JsonResponse({"error": "An error has occured"}, status=500)
+        
+        request.session['pending_invitation'] = invitation_id
+
+        return oauth_login(request)
