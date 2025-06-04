@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from supabase_config.supabase_client import supabase
+from clients.supabase_client import supabase
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'custom_auth',
     'community_posts',
     'complaints',
+    'invitations',
 ]
 
 MIDDLEWARE = [
