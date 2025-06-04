@@ -52,3 +52,7 @@ class InvitationAdapter:
         request.session['pending_invitation'] = invitation_id
 
         return oauth_login(request)
+    
+    def get_list_invitation(request):
+        res = supabase.table('invitations').select('*').execute()
+        return JsonResponse({'invitations': res.data})
