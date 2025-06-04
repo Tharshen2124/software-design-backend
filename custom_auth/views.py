@@ -10,7 +10,7 @@ def oauth_login(request):
 
     response = supabase.auth.sign_in_with_oauth({
         "provider": "google",
-        "options": {"redirect_to": "http://localhost:8000/auth/callback"}
+        "options": {"redirect_to": "http://127.0.0.1:8000/auth/callback", "skip_browser_redirect": True}
     })
 
     print(response.url)
@@ -21,7 +21,8 @@ def oauth_callback(request):
     code = request.GET.get('code')
     
     try:
-        supabase.auth.exchange_code_for_session({"auth_code": code})
+        code_verifier = request.session.pop('oauth_code_verifier', None)
+        supabase.auth.exchange_code_for_session({"auth_code": code, "code_verifier": code_verifier})
         session = supabase.auth.get_session()
         
         redirect_url = f"{settings.FRONTEND_URL}/auth/callback?token={session.access_token}"
