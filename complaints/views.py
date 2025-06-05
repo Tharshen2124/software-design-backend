@@ -1,8 +1,8 @@
 from django.http import JsonResponse
 from clients.supabase_client import supabase
 from django.views.decorators.csrf import csrf_exempt
-from complaint_builder import ComplaintBuilder
-from complaint_director import ComplaintDirector
+from .complaint_builder import ComplaintBuilder
+from .complaint_director import ComplaintDirector
 
 @csrf_exempt
 def create(request):
@@ -12,13 +12,7 @@ def create(request):
 
         complaint_data = director.buildComplaints(builder, request)
 
-        result = supabase.table("complaints").insert(complaint_data).execute()
-
-        if result.get("error"):
-            return JsonResponse({
-                "error": "Failed to upload complaint to Supabase",
-                "details": result["error"]
-            }, status=500)
+        supabase.table("complaints").insert(complaint_data).execute()
 
         return JsonResponse({
             "message": "Successfully uploaded complaint",

@@ -17,6 +17,6 @@ class ComplaintComponentBuilder(ABC):
     def setStatus(self, status):
         pass
 
-    @abstractmethod
-    def setUpdatedAt(self, updated_at):
-        pass
+    # @abstractmethod
+    # def setUpdatedAt(self, updated_at):
+    #     pass

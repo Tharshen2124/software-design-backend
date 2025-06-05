@@ -4,7 +4,7 @@ class ComplaintBuilder(ComplaintComponentBuilder):
     def __init__(self):
         self.complaint = {}
 
-    def setCitizenId(self, citizen_id):
+    def setCitizenID(self, citizen_id):
         self.complaint['citizen_id'] = citizen_id
     
     def setHeader(self, header):
