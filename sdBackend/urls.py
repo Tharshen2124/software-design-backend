@@ -6,4 +6,5 @@ urlpatterns = [
     path('auth/', include('custom_auth.urls')),
     path("posts/", include("community_posts.urls")), 
     path('complaints/', include('complaints.urls')),
+    path('invitation/', include('invitations.urls')),
 ]

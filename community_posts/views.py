@@ -1,7 +1,7 @@
 from django.http import JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
-from supabase_config.supabase_client import supabase
-from cloudinary_client import CloudinaryClient
+from clients.supabase_client import supabase
+from clients.cloudinary_client import CloudinaryClient
 
 @csrf_exempt
 def posts_list_create(request):
