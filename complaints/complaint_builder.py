@@ -1,5 +1,5 @@
 from interfaces.complaint_builder_interface import ComplaintComponentBuilder
-
+from status_enum import Status
 class ComplaintBuilder(ComplaintComponentBuilder):
     def __init__(self):
         self.complaint = {}
@@ -13,8 +13,8 @@ class ComplaintBuilder(ComplaintComponentBuilder):
     def setDetails(self, details):
         self.complaint['complaint_description'] = details
     
-    def setStatus(self, status):
-        self.complaint['status'] = status
+    def setStatus(self, status: Status):
+        self.complaint['status'] = status.value
 
     # def setFollowUp(self, followUp):
     #     self.complaint['followUp'] = followUp
