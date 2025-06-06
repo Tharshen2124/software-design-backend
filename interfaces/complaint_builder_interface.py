@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class ComplaintComponentBuilder(ABC):
+class CaseComponentBuilder(ABC):
     @abstractmethod
     def setHeader(self, header):
         pass

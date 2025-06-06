@@ -1,6 +1,5 @@
-from interfaces.complaint_builder_interface import ComplaintComponentBuilder
-from status_enum import Status
-class ComplaintBuilder(ComplaintComponentBuilder):
+from interfaces.complaint_builder_interface import CaseComponentBuilder
+class ComplaintBuilder(CaseComponentBuilder):
     def __init__(self):
         self.complaint = {}
 
