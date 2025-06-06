@@ -45,9 +45,9 @@ def post_detail(request, post_id):
             
         return JsonResponse(result)
     
-    elif request.method == 'DELETE':
-        supabase.table('posts').delete().eq('id', post_id).execute()
-        return JsonResponse({'status': 'deleted'}, status=204)
+   # elif request.method == 'DELETE':
+     #   supabase.table('posts').delete().eq('id', post_id).execute()
+      #  return JsonResponse({'status': 'deleted'}, status=204)
     
 @csrf_exempt
 def post_comments(request, post_id):
