@@ -1,16 +1,12 @@
-from interfaces.complaint_builder_interface import ComplaintComponentBuilder
-from status_enum import Status
+from interfaces.complaint_builder_interface import CaseComponentBuilder
+from .complaint_adapter import ComplaintData
 
+# builds the complaint based on the interface using the data provided 
 class ComplaintDirector:
-    def buildComplaints(self, builder: ComplaintComponentBuilder, request):
-        builder.setHeader(request.POST.get("complaint_title"))
-        builder.setDetails(request.POST.get("complaint_description"))
-        builder.setCitizenID(request.POST.get("citizen_id"))
-        try:
-            status_enum = Status(request.POST.get("status", "pending"))
-        except ValueError:
-            raise ValueError(f"Invalid status value.")
-        
-        builder.setStatus(status_enum)
+   def buildComplaints(self, builder: CaseComponentBuilder, data: ComplaintData):
+        builder.setHeader(data.title)
+        builder.setDetails(data.description)
+        builder.setCitizenID(data.citizen_id)
+        builder.setStatus(data.status)
 
         return builder.complaint
