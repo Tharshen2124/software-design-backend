@@ -11,10 +11,7 @@ class ComplaintBuilder(ComplaintComponentBuilder):
         self.complaint['complaint_title'] = header
 
     def setDetails(self, details):
-        self.complaint['complaint_description'] = details
-    
-    def setStatus(self, status: Status):
-        self.complaint['status'] = status.value
+        self.complaint['complaint_description'] = details        
 
     # def setFollowUp(self, followUp):
     #     self.complaint['followUp'] = followUp

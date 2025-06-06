@@ -13,9 +13,8 @@ class ComplaintComponentBuilder(ABC):
     # def setFollowUp(self, followUp):
     #     pass
 
-    @abstractmethod
     def setStatus(self, status):
-        pass
+        self.complaint['status'] = status.value
 
     # @abstractmethod
     # def setUpdatedAt(self, updated_at):
