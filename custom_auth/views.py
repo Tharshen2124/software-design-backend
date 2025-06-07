@@ -10,7 +10,8 @@ def oauth_login(request):
     supabase = get_supabase(request)
     invitation_id = request.GET.get("invitation_id") or request.session.get("pending_invitation")
 
-    redirect_to = "http://127.0.0.1:8000/auth/callback"
+    redirect_to = f"{settings.BACKEND_URL}/auth/callback"
+    
     if invitation_id:
         redirect_to += f"?invitation_id={invitation_id}"
 
