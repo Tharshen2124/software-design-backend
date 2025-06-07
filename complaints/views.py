@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from clients.supabase_client import supabase
 from django.views.decorators.csrf import csrf_exempt
 from .complaint_builder import ComplaintBuilder
-from .complaint_director import ComplaintDirector
+from .case_director import ComplaintDirector
 from .complaint_adapter import ComplaintAdapter
 
 @csrf_exempt
