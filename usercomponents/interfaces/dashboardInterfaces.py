@@ -9,7 +9,12 @@ class Dashboard(ABC):
 # Concrete classes
 class AdminDashboard(Dashboard):
     def setupDashboard(self):
-        return "Admin dashboard setup complete"
+        title = "Analytics Dashboard."
+        description = "Track complaint trends and monitor resolution status across the platform."
+        return {
+            "title": title,
+            "description": description
+        }
 
 class CitizenDashboard(Dashboard):
     def setupDashboard(self):
