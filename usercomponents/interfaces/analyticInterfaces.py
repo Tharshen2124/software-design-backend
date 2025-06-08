@@ -29,7 +29,14 @@ class AdminAnalytics(Analytics):
         rejected = analytics.get_status_complaints("rejected")
 
         # sum up
-        summary = [total, pending, filtered, approved, in_progress, approved, in_progress, resolved]
+        summary = {
+            "total": total, 
+            "pending": pending, 
+            "filtered": filtered, 
+            "approved": approved, 
+            "in_progress": in_progress,
+            "resolved": resolved
+        }
 
         # complaints over time, by default it's 30 days
         complaints_over_time = self.update_complaints_over_time()
