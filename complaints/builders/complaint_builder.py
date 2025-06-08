@@ -12,6 +12,12 @@ class ComplaintBuilder(CaseComponentBuilder):
     def setDetails(self, details):
         self.complaint['complaint_description'] = details        
 
+    def setImage(self, image):
+        self.complaint['complaint_image_url'] = image
+    
+    def setStatus(self, status):
+        self.complaint['status'] = status.value
+
     # def setFollowUp(self, followUp):
     #     self.complaint['followUp'] = followUp
 

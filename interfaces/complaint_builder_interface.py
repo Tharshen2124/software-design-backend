@@ -13,9 +13,9 @@ class CaseComponentBuilder(ABC):
     # def setFollowUp(self, followUp):
     #     pass
 
+    @abstractmethod
     def setStatus(self, status):
-        self.complaint['status'] = status.value
-
+        pass
     # @abstractmethod
     # def setUpdatedAt(self, updated_at):
     #     pass
