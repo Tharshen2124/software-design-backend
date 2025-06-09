@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect
+from clients.supabase_client import supabase
 from usercomponents.interfaces.mainInterfaces import (
     AdminComponent,
     CitizenComponent,
@@ -17,8 +18,13 @@ ROLE_FACTORY_MAP = {
 
 class UserComponentAdapter: 
     def display_dashboard(request):
-        # user = request.user
-        role = 'administrator'
+        user_id = request.GET.get('user_id')
+        if not user_id:
+            return JsonResponse({'error': 'user_id is required'}, status=400)
+        
+        response = supabase.table('users').select('role').eq('id', user_id).execute()
+
+        role = response.data[0]['role']
 
         factory_class = ROLE_FACTORY_MAP.get(role)
 
