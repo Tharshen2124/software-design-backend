@@ -33,11 +33,16 @@ class CitizenComponent(UserComponentFactory):
         return CitizenAnalytics()
     
 class AdminComponent(UserComponentFactory):
+    def __init__(self, request):
+        self.request = request
+
     def createDashboard(self) -> Dashboard:
         return AdminDashboard()
     
     def createAnalytics(self) -> Analytics:
-        return AdminAnalytics()
+        timeline = self.request.GET.get("timeline", "30days").lower()
+        year = self.request.GET.get("year")
+        return AdminAnalytics(timeline, year)
     
 class MaintenanceCompanyComponent(UserComponentFactory):
     def createDashboard(self) -> Dashboard:

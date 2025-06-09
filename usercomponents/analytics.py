@@ -13,7 +13,7 @@ def get_status_complaints(status:str):
     num = response.count
     return num
 
-def get_complaint_over_time(timeline: int = 30):
+def get_complaint_over_time(timeline: int):
     now = datetime.now(pytz.utc)
     start_date = now - timedelta(days=timeline)
 
@@ -41,6 +41,38 @@ def get_complaint_over_time(timeline: int = 30):
 
     return all_days
 
+def get_complaint_over_time_in_range(start_date, end_date):
+    # Ensure start_date and end_date are datetime objects in UTC
+    if isinstance(start_date, str):
+        start_date = datetime.fromisoformat(start_date).astimezone(pytz.utc)
+    if isinstance(end_date, str):
+        end_date = datetime.fromisoformat(end_date).astimezone(pytz.utc)
+
+    # Fetch complaints created within the date range
+    response = supabase.table("complaints") \
+        .select("created_at") \
+        .gte("created_at", start_date.isoformat()) \
+        .lte("created_at", end_date.isoformat()) \
+        .execute()
+
+    complaints = response.data
+
+    # Initialize a dictionary with all days set to 0
+    num_days = (end_date.date() - start_date.date()).days
+    all_days = OrderedDict()
+    for i in range(num_days + 1):
+        day = (start_date + timedelta(days=i)).date().isoformat()
+        all_days[day] = 0
+
+    # Count complaints per day
+    for complaint in complaints:
+        created_at = complaint.get("created_at")
+        if created_at:
+            dt = datetime.fromisoformat(created_at).astimezone(pytz.utc).date().isoformat()
+            if dt in all_days:
+                all_days[dt] += 1
+
+    return all_days
 
 def get_resolution_rate(resolved: int, total: int):
 

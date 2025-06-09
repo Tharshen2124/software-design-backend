@@ -1,6 +1,8 @@
 # Analytics interfaces
 from abc import ABC, abstractmethod
 from .. import analytics
+from datetime import datetime
+import calendar
 
 # interface class
 class Analytics(ABC):
@@ -11,8 +13,34 @@ class Analytics(ABC):
 # concrete classes
 class AdminAnalytics(Analytics):
 
+    def __init__(self, timeline, year):
+        self.timeline = timeline
+        self.year = year
+
     def update_complaints_over_time(self):
-        complaints_over_time = analytics.get_complaint_over_time()
+
+        if self.timeline in ["7days", "30days"]:
+            days_map = {"7days": 7, "30days": 30} # dict of labels and int
+            days = days_map.get(self.timeline, 30) # return int
+            complaints_over_time = analytics.get_complaint_over_time(days) # run the code
+        
+        else:
+            # for specific month
+            try: 
+                month_number = list(calendar.month_name).index(self.timeline.capitalize())
+                
+                if self.year is None:
+                    current_year = datetime.now().year
+                else: 
+                    current_year = int(self.year)
+
+                start_date = datetime(current_year, month_number, 1)
+                end_day = calendar.monthrange(current_year, month_number)[1]
+                end_date = datetime(current_year, month_number, end_day)
+                
+                complaints_over_time = analytics.get_complaint_over_time_in_range(start_date, end_date)
+            except ValueError:
+                return "Error fetching data"
 
         return complaints_over_time
 

@@ -19,6 +19,8 @@ ROLE_FACTORY_MAP = {
 class UserComponentAdapter: 
     def display_dashboard(request):
         user_id = request.GET.get('user_id')
+        
+
         if not user_id:
             return JsonResponse({'error': 'user_id is required'}, status=400)
         
@@ -31,7 +33,7 @@ class UserComponentAdapter:
         if factory_class is None:
             raise ValueError(f"Unknown role: {role}")
         
-        factory = factory_class()
+        factory = factory_class(request)
         dashboard_data = factory.createDashboard()
         analytics_data = factory.createAnalytics()
 
@@ -42,4 +44,3 @@ class UserComponentAdapter:
         }
         
         return JsonResponse (data)
-
