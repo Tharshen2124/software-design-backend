@@ -76,7 +76,13 @@ class AdminAnalytics(Analytics):
         resolved_percentage = analytics.get_percentage(total, resolved)
         rejected_percentage = analytics.get_percentage(total, rejected)
 
-        status_breakdown = [pending_percentage, filtered_percentage, in_progress_percentage, resolved_percentage, rejected_percentage]
+        status_breakdown = {
+            "pending_percentage": pending_percentage, 
+            "filtered_percentage": filtered_percentage, 
+            "in_progress_percentage": in_progress_percentage, 
+            "resolved_percentage": resolved_percentage, 
+            "rejected_percentage": rejected_percentage
+        }
 
         # rates
         resolution_rate = analytics.get_resolution_rate(resolved, total)
