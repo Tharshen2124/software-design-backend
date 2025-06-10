@@ -9,6 +9,7 @@ class CaseDirector:
       builder.setDetails(data.description)
       builder.setCitizenID(data.citizen_id)
       builder.setStatus(data.status)
+      builder.setImage(data.image_url)
 
       return builder.complaint
    
