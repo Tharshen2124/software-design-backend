@@ -2,6 +2,9 @@ from django.urls import path
 from complaints.views import complaint_views
 
 urlpatterns = [
+    path("citizen/<int:citizen_id>/", complaint_views.get_all_complaints_for_citizen),
+    path("citizen/complaint/<int:complaint_id>/", complaint_views.get_complaint_for_citizen),
+    path("approved/", complaint_views.get_all_approved_complaints),
     path("create/", complaint_views.create),
     path("custom-admin/", complaint_views.get_all_complaints),
     path("custom-admin/<int:complaint_id>/", complaint_views.get_complaint),

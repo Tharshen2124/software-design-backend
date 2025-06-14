@@ -14,13 +14,7 @@ class ComplaintData:
 class ComplaintAdapter:
     @staticmethod
     def get_data(request):
-        try:
-            print(request.POST.get("complaint_title"))
-            print(request.POST.get("complaint_description"))
-            print(request.POST.get("citizen_id"))   
-            print(request.POST.get("status", "pending"))
-            print(request.FILES.get("complaint_image"))
-            
+        try:            
             title = request.POST.get("complaint_title")
             description = request.POST.get("complaint_description")
             citizen_id = request.POST.get("citizen_id")

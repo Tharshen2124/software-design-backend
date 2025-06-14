@@ -32,6 +32,47 @@ def create(request):
         }, status=500)
 
 @csrf_exempt
+def get_all_complaints_for_citizen(request, citizen_id):
+    response = supabase.table('complaints') \
+        .select('*, citizens(*, users(*))') \
+        .eq('citizen_id', str(citizen_id)) \
+        .execute()
+    
+    return JsonResponse({
+        "complaints": response.data
+    }, safe=False)
+
+@csrf_exempt
+def get_complaint_for_citizen(request, complaint_id):
+    response = supabase.table('complaints') \
+        .select('*, citizens(*, users(*))') \
+        .eq('complaint_id', str(complaint_id)) \
+        .single() \
+        .execute()
+
+    return JsonResponse({
+        "complaint": response.data
+    }, safe=False)
+
+@csrf_exempt
+def get_all_approved_complaints(request):
+    response = supabase.table('complaints') \
+        .select('*, citizens(*, users(*))') \
+        .eq('status', 'approved') \
+        .execute()
+    
+    # retrieve all maintenance_companies users
+    maintenance_companies = supabase.table('maintenance_companies') \
+        .select('*, users(*)') \
+        .execute()
+
+    return JsonResponse({
+        "approved_complaints": response.data, 
+        "maintenance_companies": maintenance_companies.data
+    }, safe=False)
+
+# for admin filtering
+@csrf_exempt
 def get_all_complaints(request):
     response = supabase.table('complaints') \
         .select('*, citizens(*, users(*))') \
@@ -41,6 +82,7 @@ def get_all_complaints(request):
         "complaints": response.data
     }, safe=False)
 
+# for more info section of admin filtering
 @csrf_exempt
 def get_complaint(request, complaint_id):
     response = supabase.table('complaints')\
@@ -53,6 +95,7 @@ def get_complaint(request, complaint_id):
         "complaint": response.data
     }, safe=False)
 
+# for government approving
 @csrf_exempt
 def get_all_filtered_complaints(request):
     response = supabase.table('complaints')\
@@ -64,6 +107,7 @@ def get_all_filtered_complaints(request):
         "filtered_complaints": response.data
     }, safe=False)
 
+# for more info section of government approving
 @csrf_exempt
 def get_fitlered_complaint(request, complaint_id):
     response = supabase.table('complaints')\
@@ -77,6 +121,7 @@ def get_fitlered_complaint(request, complaint_id):
         "filtered_complaint": response.data
     }, safe=False)
 
+# for updating complaint status by admin or government
 @csrf_exempt
 def update_complaint_status(request, complaint_id):
     if request.method != "POST":
@@ -100,5 +145,6 @@ def update_complaint_status(request, complaint_id):
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
 
 
