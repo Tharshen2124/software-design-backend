@@ -61,7 +61,7 @@ def create(request):
 @csrf_exempt
 def get_all_maintenance_projects_for_company(request, maintenance_company_id):
     if request.method != "GET":
-        return JsonResponse({"error": "Kinda bullshit is allowed."}, status=405)
+        return JsonResponse({"error": "GET is only allowed."}, status=405)
 
     # retrieve maintenance projets that have status "pending" and another retrival logic for the status "in_progress"
     try:
@@ -94,7 +94,7 @@ def get_all_maintenance_projects_for_company(request, maintenance_company_id):
 @csrf_exempt
 def get_maintenance_projects_for_company(request, project_id):
     if request.method != "GET":
-        return JsonResponse({"error": "Kinda gay is allowed."}, status=405)
+        return JsonResponse({"error": "GET is only allowed."}, status=405)
 
     try:
         response = supabase.table('maintenance_projects') \
@@ -102,10 +102,7 @@ def get_maintenance_projects_for_company(request, project_id):
             .eq('maintenance_project_id', str(project_id)) \
             .single() \
             .execute()
-
-        if not response.data:
-            return JsonResponse({"message": "Maintenance project not found."}, status=404)
-
+            
         return JsonResponse({
             "maintenance_project": response.data
         }, safe=False, status=200)
@@ -123,9 +120,13 @@ def update(request):
 
     try:
         data = MaintenanceProjectAdapter.get_data_for_update(request)
+        
         status = data.status.value
         image_url = data.image_url
         maintenance_project_id = data.maintenance_project_id
+        follow_up = data.follow_up
+
+        print(f"Updating maintenance project {maintenance_project_id} with status: \n {status},\n image_url: {image_url},\n follow_up: {follow_up}")
 
         if status == Status.IN_PROGRESS.value:
             print("Updating status to IN_PROGRESS")
@@ -138,7 +139,8 @@ def update(request):
             supabase.table("maintenance_projects") \
                 .update({
                     "status": status, 
-                    "project_image_url": image_url
+                    "project_image_url": image_url,
+                    "follow_up": follow_up
                 }) \
                 .eq("maintenance_project_id", maintenance_project_id) \
                 .execute()
