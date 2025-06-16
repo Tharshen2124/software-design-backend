@@ -24,9 +24,14 @@ class UserComponentAdapter:
         if not user_id:
             return JsonResponse({'error': 'user_id is required'}, status=400)
         
-        response = supabase.table('users').select('role').eq('id', user_id).execute()
+        try: 
+            response = supabase.table('users').select('role').eq('id', user_id).execute()
 
-        role = response.data[0]['role']
+            role = response.data[0]['role']
+
+        except Exception as e:
+            print("Supabase fetch error:", e)
+            return JsonResponse({"error": "Failed to fetch role from Supabase"}, status=500)
 
         factory_class = ROLE_FACTORY_MAP.get(role)
 
@@ -38,6 +43,7 @@ class UserComponentAdapter:
         analytics_data = factory.createAnalytics()
 
         data = {
+            "role": role,
             "message": "Dashboard rendered successfully.",
             "dashboard": dashboard_data.setupDashboard(),
             "analytics": analytics_data.setupAnalytics()

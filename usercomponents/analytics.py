@@ -3,15 +3,30 @@ from datetime import datetime, timedelta
 from collections import OrderedDict
 import pytz
 
+
+def get_total_complaints_by_user(user_id: str):
+    try:
+        response = supabase.table("complaints").select("*", count="exact").eq('user_id', user_id).execute()
+        num = response.count
+        return num or 0
+    
+    except Exception as e:
+        print(f"Error fetching complaints for user '{user_id}':", e)
+        return 0
+
 def get_all_total_complaints(): 
     response = supabase.table("complaints").select("*", count="exact").execute()
     num = response.count
     return num
 
 def get_status_complaints(status:str):
-    response = supabase.table("complaints").select("*", count="exact").eq('status', status).execute()
-    num = response.count
-    return num
+    try:
+        response = supabase.table("complaints").select("*", count="exact").eq('status', status).execute()
+        return response.count or 0
+    
+    except Exception as e:
+        print(f"Error fetching complaints with status '{status}':", e)
+        return 0
 
 def get_complaint_over_time(timeline: int):
     now = datetime.now(pytz.utc)
