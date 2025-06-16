@@ -20,7 +20,6 @@ class UserComponentAdapter:
     def display_dashboard(request):
         user_id = request.GET.get('user_id')
         
-
         if not user_id:
             return JsonResponse({'error': 'user_id is required'}, status=400)
         

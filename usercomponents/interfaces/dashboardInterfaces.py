@@ -18,12 +18,27 @@ class AdminDashboard(Dashboard):
 
 class CitizenDashboard(Dashboard):
     def setupDashboard(self):
-        return "Citizen dashboard setup complete"
+        title = "My Complaints Overview."
+        description = "Track your submitted complaints and the overall status."
+        return {
+            "title": title,
+            "description": description
+        }
 
 class MaintenanceCompanyDashboard(Dashboard):
     def setupDashboard(self):
-        return "Maintenance company dashboard setup complete"
+        title = "Task Overview."
+        description = "Track assigned tasks and their resolution status."
+        return {
+            "title": title,
+            "description": description
+        }
 
 class GovtBodyDashboard(Dashboard):
     def setupDashboard(self):
-        return "Government body dashboard setup complete"
+        title = "Maintenance Projects Overview."
+        description = "Track filtered complaints, approved projects, and their resolution status."
+        return {
+            "title": title,
+            "description": description
+        }

@@ -26,11 +26,18 @@ class UserComponentFactory(ABC):
 
 ## concrete classes
 class CitizenComponent(UserComponentFactory):
+    def __init__(self, request):
+        self.request = request
+
     def createDashboard(self) -> Dashboard:
         return CitizenDashboard()
     
     def createAnalytics(self) -> Analytics:
-        return CitizenAnalytics()
+        user_id = self.request.GET.get("user_id")
+        timeline = self.request.GET.get("timeline", "30days").lower()
+        year = self.request.GET.get("year")
+
+        return CitizenAnalytics(user_id, timeline, year)
     
 class AdminComponent(UserComponentFactory):
     def __init__(self, request):
@@ -45,15 +52,25 @@ class AdminComponent(UserComponentFactory):
         return AdminAnalytics(timeline, year)
     
 class MaintenanceCompanyComponent(UserComponentFactory):
+    def __init__(self, request):
+        self.request = request
+
     def createDashboard(self) -> Dashboard:
         return MaintenanceCompanyDashboard()
     
     def createAnalytics(self) -> Analytics:
-        return MaintenanceCompanyAnalytics()
+        timeline = self.request.GET.get("timeline", "30days").lower()
+        year = self.request.GET.get("year")
+        return MaintenanceCompanyAnalytics(timeline, year)
     
 class GovtBodyComponent(UserComponentFactory):
+    def __init__(self, request):
+        self.request = request
+
     def createDashboard(self) -> Dashboard:
         return GovtBodyDashboard()
     
     def createAnalytics(self) -> Analytics:
-        return GovtBodyAnalytics()
+        timeline = self.request.GET.get("timeline", "30days").lower()
+        year = self.request.GET.get("year")
+        return GovtBodyAnalytics(timeline, year)
