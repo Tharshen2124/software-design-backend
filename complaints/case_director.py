@@ -9,14 +9,15 @@ class CaseDirector:
       builder.setDetails(data.description)
       builder.setCitizenID(data.citizen_id)
       builder.setStatus(data.status)
+      builder.setImage(data.image_url)
 
       return builder.complaint
    
-   def buildMaintenancePlan(self, builder: CaseComponentBuilder, data: MaintenanceProjectData):
+   def buildMaintenanceProject(self, builder: CaseComponentBuilder, data: MaintenanceProjectData):
       builder.setHeader(data.title)
       builder.setDetails(data.description)
       builder.setStatus(data.status)
-      builder.setImage(data.image_url)
-      # builder.setFollowUp(data.follow_up)
-
+      builder.setComplaintIds(data.complaint_ids)
+      builder.setMaintenanceCompanyId(data.maintenance_company_id)
+      print(data.complaint_ids)
       return builder.maintenance_plan
