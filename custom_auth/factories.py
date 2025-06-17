@@ -24,7 +24,7 @@ class CreateCitizen(UserFactory):
     
 class CreateAdmin(UserFactory):
     def create_user(self, user_id):
-        if self._record_exists("admins", "admin_id", user_id):
+        if not self._record_exists("admins", "admin_id", user_id):
             self.supabase.table("admins").insert({
                 "admin_id": user_id
             }).execute()
