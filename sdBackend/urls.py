@@ -8,4 +8,5 @@ urlpatterns = [
     path("complaints/", include("complaints.urls.complaints_urls")),
     path("maintenance/", include("complaints.urls.maintenance_urls")),
     path('invitation/', include('invitations.urls')),
+    path('', include('usercomponents.urls')),
 ]
