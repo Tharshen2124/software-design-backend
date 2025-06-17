@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from clients.supabase_client import supabase_admin
-
+# we we
 class UserFactory(ABC): 
     def __init__(self):
         self.supabase = supabase_admin
