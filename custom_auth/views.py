@@ -6,6 +6,20 @@ from clients.supabase_client import get_supabase, SUPABASE_REDIRECT_PATH
 from django.views.decorators.http import require_GET
 from invitations.invitationManager import InvitationManager
 
+from .factories import (
+    CreateAdmin,
+    CreateCitizen, 
+    CreateMaintenanceCompany,
+    CreateGovtBody
+)
+
+USER_CREATION_FACTORY_MAP = {
+    "administrator": CreateAdmin,
+    "citizen": CreateCitizen,
+    "maintenance_company": CreateMaintenanceCompany,
+    "govt_body":  CreateGovtBody,
+}
+
 def oauth_login(request):
     supabase = get_supabase(request)
     invitation_id = request.GET.get("invitation_id") or request.session.get("pending_invitation")
@@ -24,6 +38,7 @@ def oauth_login(request):
     return redirect(response.url)
 
 def oauth_callback(request):
+    
     supabase = get_supabase(request)
     code = request.GET.get('code')
     invitation_id = request.GET.get('invitation_id') or request.session.get('pending_invitation')
@@ -33,6 +48,10 @@ def oauth_callback(request):
         supabase.auth.exchange_code_for_session({"auth_code": code, "code_verifier": code_verifier})
         session = supabase.auth.get_session()
         user = supabase.auth.get_user()
+        print(f"User: {user}")
+
+        user_id= user.user.id
+        role = "citizen"  # Default role
 
         if invitation_id:
             print(f"Processing invitation: {invitation_id}")
@@ -44,9 +63,19 @@ def oauth_callback(request):
             user_id= user.user.id if hasattr(user.user, 'id') else None
             print(f"Supabase user id: {user.user.id}")
 
+            invitation = invitation_manager.get_invitation(invitation_id)
+            role = invitation.get("role", "citizen")
+
             if not invitation_manager.mark_invitation_as_used(invitation_id, user_id):
                 print("Failed to process invitation - but continuing auth flow")
         
+        print(role)
+
+        if role in USER_CREATION_FACTORY_MAP:
+            factory_class = USER_CREATION_FACTORY_MAP[role]
+            handler = factory_class()
+            handler.create_user(user_id)
+
         redirect_url = f"{settings.FRONTEND_URL}/auth/callback?token={session.access_token}"
         if invitation_id:
             redirect_url += f"&invitation_id={invitation_id}"
