@@ -10,11 +10,14 @@ class UserFactory(ABC):
         pass
 
     def _record_exists(self, table, column, user_id):
-        response = self.supabase.table(table).select(column).eq(column, user_id).maybe_single().execute()
-        return response.data is not None
+        response = self.supabase.table(table).select(column).eq(column, user_id).execute()
+        print(f"Checking record in {table}.{column} for user {user_id}: {response.data}")
+        return bool(response.data)
 
 class CreateCitizen(UserFactory):
     def create_user(self, user_id):
+        self.supabase.table("users").update({"role": "citizen"}).eq("id", user_id).execute()
+        
         if not self._record_exists("citizens", "citizen_id", user_id):
             self.supabase.table("citizens").insert({
                 "citizen_id": user_id
@@ -24,6 +27,7 @@ class CreateCitizen(UserFactory):
     
 class CreateAdmin(UserFactory):
     def create_user(self, user_id):
+        self.supabase.table("users").update({"role": "administrator"}).eq("id", user_id).execute()
         if not self._record_exists("admins", "admin_id", user_id):
             self.supabase.table("admins").insert({
                 "admin_id": user_id
@@ -33,6 +37,7 @@ class CreateAdmin(UserFactory):
     
 class CreateMaintenanceCompany(UserFactory):
     def create_user(self, user_id):
+        self.supabase.table("users").update({"role": "maintenance_company"}).eq("id", user_id).execute()
         if not self._record_exists("maintenance_companies", "maintenance_company_id", user_id):
             self.supabase.table("maintenance_companies").insert({
                 "maintenance_company_id": user_id
@@ -42,6 +47,7 @@ class CreateMaintenanceCompany(UserFactory):
     
 class CreateGovtBody(UserFactory):
     def create_user(self, user_id):
+        self.supabase.table("users").update({"role": "govt_body"}).eq("id", user_id).execute()
         if not self._record_exists("government_bodies", "government_body_id", user_id):
             self.supabase.table("government_bodies").insert({
                 "government_body_id": user_id

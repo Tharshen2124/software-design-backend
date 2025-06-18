@@ -42,7 +42,7 @@ def oauth_callback(request):
     supabase = get_supabase(request)
     code = request.GET.get('code')
     invitation_id = request.GET.get('invitation_id') or request.session.get('pending_invitation')
-    
+    is_new_user = False
 
     try:
         code_verifier = request.session.pop('oauth_code_verifier', None)
@@ -54,6 +54,7 @@ def oauth_callback(request):
         role = None
 
         if invitation_id:
+            is_new_user = True
             print(f"Processing invitation: {invitation_id}")
             invitation_manager = InvitationManager(supabase)
                 
@@ -69,22 +70,29 @@ def oauth_callback(request):
             if not invitation_manager.mark_invitation_as_used(invitation_id, user_id):
                 print("Failed to process invitation - but continuing auth flow")
         
-        if not role:
-            try:
-                user_role = supabase.table("users").select("*").eq("id", user_id).single().execute()
-                print(f"user_role response: {user_role}")
-                if user_role and getattr(user_role, "data", None):
-                    role = user_role.data.get("role")
-                else:
-                    print("user_role.data is None")
-            except Exception as fetch_err:
-                print(f"Error fetching user role: {fetch_err}")
+        try:
+            # Check if user already exists
+            result = supabase.table("users").select("role").eq("id", user_id).maybe_single().execute()
+            print(f"user role lookup: {result.data}")
 
-        if not role:
-            print("Defaulting to citizen")
-            role = "citizen"
+            if result.data:
+                # Existing user
+                role = result.data.get("role")
+                print(f"Existing user detected, role: {role}")
+            else:
+                # New user, assign role
+                is_new_user = True
+                if not role:
+                    print("No invitation found, assigning default role 'citizen'")
+                    role = "citizen"
+        except Exception as fetch_err:
+            print(f"Error checking user existence: {fetch_err}")
+            is_new_user = True
+            if not role:
+                print("Fallback: assigning default role 'citizen'")
+                role = "citizen"
 
-        if role in USER_CREATION_FACTORY_MAP:
+        if is_new_user and role in USER_CREATION_FACTORY_MAP:
             factory_class = USER_CREATION_FACTORY_MAP[role]
             handler = factory_class()
             handler.create_user(user_id)
