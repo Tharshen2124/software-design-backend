@@ -159,3 +159,27 @@ def update(request):
             "error": "An unexpected error occurred",
             "details": str(e)
         }, status=500)
+
+# retrieve all maintenance projects where each has their list of complaints and the maintenance company associated to a maintenance project
+@csrf_exempt
+def get_all_maintenance_projects(request):
+    if request.method != "GET":
+        return JsonResponse({"error": "GET is only allowed."}, status=405)
+
+    try:
+        response = supabase.table('maintenance_projects') \
+            .select('*, complaints(*), maintenance_companies(*, users(*))') \
+            .execute()
+        
+        if not response.data:
+            return JsonResponse({"message": "No maintenance projects found."}, status=404)
+
+        return JsonResponse({
+            "maintenance_projects": response.data
+        }, safe=False, status=200)
+
+    except Exception as e:
+        return JsonResponse({
+            "error": "An unexpected error occurred",
+            "details": str(e)
+        }, status=500)
