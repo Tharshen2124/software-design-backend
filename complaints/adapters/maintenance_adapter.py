@@ -34,7 +34,7 @@ class MaintenanceProjectAdapter:
             except ValueError:
                 raise ValueError(f"Invalid status value: {status_str}")
 
-            return MaintenanceProjectData(title, description, status_enum, complaint_ids, maintenance_company_id, None, None)
+            return MaintenanceProjectData(title, description, status_enum, complaint_ids, maintenance_company_id, None, None, None)
 
         except Exception as e:
             raise ValueError(str(e))
