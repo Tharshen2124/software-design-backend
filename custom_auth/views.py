@@ -6,7 +6,7 @@ from clients.supabase_client import supabase, get_supabase, SUPABASE_REDIRECT_PA
 from django.views.decorators.http import require_GET
 from invitations.invitationManager import InvitationManager
 
-from .factories import (
+from custom_auth.factories import (
     CreateAdmin,
     CreateCitizen, 
     CreateMaintenanceCompany,
@@ -76,14 +76,13 @@ def oauth_callback(request):
             print(f"user role lookup: {result}")
             role = result.data.get("role") if result and result.data else None
 
-            if result is not None:
-                role = result.data.get("role")
+            if role:
                 print(f"Existing user detected, role: {role}")
             else:
-                # New user, assign role
+                # New user or no role assigned
                 is_new_user = True
                 if not role:
-                    print("No invitation found, assigning default role 'citizen'")
+                    print("No invitation found or role is empty, assigning default role 'citizen'")
                     role = "citizen"
 
         except Exception as fetch_err:
