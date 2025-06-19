@@ -73,10 +73,10 @@ def oauth_callback(request):
         try:
             # Check if user already exists
             result = supabase.table("users").select("role").eq("id", user_id).maybe_single().execute()
-            print(f"user role lookup: {result.data}")
+            print(f"user role lookup: {result}")
+            role = result.data.get("role") if result and result.data else None
 
-            if result.data:
-                # Existing user
+            if role:
                 role = result.data.get("role")
                 print(f"Existing user detected, role: {role}")
             else:
@@ -85,6 +85,7 @@ def oauth_callback(request):
                 if not role:
                     print("No invitation found, assigning default role 'citizen'")
                     role = "citizen"
+
         except Exception as fetch_err:
             print(f"Error checking user existence: {fetch_err}")
             is_new_user = True
