@@ -76,7 +76,7 @@ def oauth_callback(request):
             print(f"user role lookup: {result}")
             role = result.data.get("role") if result and result.data else None
 
-            if role:
+            if result is not None:
                 role = result.data.get("role")
                 print(f"Existing user detected, role: {role}")
             else:
