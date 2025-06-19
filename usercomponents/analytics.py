@@ -116,6 +116,7 @@ def get_complaint_over_time(timeline: int):
     complaints = response.data
 
     # Initialize a dictionary with all days set to 0
+
     all_days = OrderedDict()
     for i in range(timeline + 1):
         day = (start_date + timedelta(days=i)).date().isoformat()
