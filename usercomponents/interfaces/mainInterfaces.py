@@ -47,9 +47,10 @@ class AdminComponent(UserComponentFactory):
         return AdminDashboard()
     
     def createAnalytics(self) -> Analytics:
+        user_id = self.request.GET.get("user_id")
         timeline = self.request.GET.get("timeline", "30days").lower()
         year = self.request.GET.get("year")
-        return AdminAnalytics(timeline, year)
+        return AdminAnalytics(user_id, timeline, year)
     
 class MaintenanceCompanyComponent(UserComponentFactory):
     def __init__(self, request):
