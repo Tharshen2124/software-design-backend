@@ -285,5 +285,5 @@ class GovtBodyAnalytics(Analytics):
             "summary": summary,
             "complaints_over_time": projects_over_time,
             "status_breakdown": status_breakdown,
-            "resolution_rate": resolution_rate
+            #"resolution_rate": resolution_rate
         }
