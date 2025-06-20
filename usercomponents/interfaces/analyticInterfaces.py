@@ -154,7 +154,8 @@ class CitizenAnalytics(Analytics):
     
 class MaintenanceCompanyAnalytics(Analytics):
 
-    def __init__(self, timeline, year):
+    def __init__(self, user_id, timeline, year):
+        self.user_id = user_id
         self.timeline = timeline
         self.year = year
 
@@ -163,7 +164,7 @@ class MaintenanceCompanyAnalytics(Analytics):
         if self.timeline in ["7days", "30days"]:
             days_map = {"7days": 7, "30days": 30} # dict of labels and int
             days = days_map.get(self.timeline, 30) # return int
-            complaints_over_time = analytics.get_projects_over_time(days) # run the code
+            complaints_over_time = analytics.get_projects_over_time_of_user(self.user_id, days) # run the code
         
         else:
             # for specific month
@@ -179,16 +180,16 @@ class MaintenanceCompanyAnalytics(Analytics):
                 end_day = calendar.monthrange(current_year, month_number)[1]
                 end_date = datetime(current_year, month_number, end_day)
                 
-                complaints_over_time = analytics.get_projects_over_time_in_range(start_date, end_date)
+                complaints_over_time = analytics.get_projects_over_time_in_range_of_user(self.user_id, start_date, end_date)
             except ValueError:
                 return "Error fetching data"
 
         return complaints_over_time
     
     def setupAnalytics(self):
-        assigned_raw = analytics.get_status_projects("approved")
-        in_progress = analytics.get_status_projects("in_progress")
-        resolved = analytics.get_status_projects("resolved")
+        assigned_raw = analytics.get_status_projects_of_user(self.user_id, "approved")
+        in_progress = analytics.get_status_projects(self.user_id, "in_progress")
+        resolved = analytics.get_status_projects(self.user_id, "resolved")
         
         assigned = assigned_raw + in_progress + resolved  # total assigned projects
         summary = {
