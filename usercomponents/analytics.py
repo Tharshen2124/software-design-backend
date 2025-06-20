@@ -253,6 +253,8 @@ def get_complaint_over_time_in_range(start_date, end_date):
     return all_days
 
 def get_resolution_rate(resolved: int, total: int):
+    if total == 0:
+        return 0.0
 
     resolution_rate = (resolved / total) * 100
 
@@ -260,6 +262,9 @@ def get_resolution_rate(resolved: int, total: int):
 
 
 def get_percentage(total:int, num:int):
+    if total == 0:
+        return 0.0
+     
     percentage = (num / total) * 100
 
     return round(percentage, 2)
@@ -406,6 +411,7 @@ def get_status_projects_of_user(user_id: str, status:str):
     delay = 0.5  # seconds
     for attempt in range(max_retries):
         try:
+            print(f"Filtering by user_id: {user_id!r}")
             response = supabase.table("maintenance_projects").select("*", count="exact").eq('status', status).eq("maintenance_company_id", user_id).execute()
             return response.count or 0
         except httpx.ReadError as e:
@@ -425,10 +431,12 @@ def get_projects_over_time_of_user(user_id:str, timeline: int):
     complaints = []
     for attempt in range(max_retries):
         try:
+            print(f"Filtering by user_id: {user_id!r}")
             response = supabase.table("maintenance_projects") \
                 .select("created_at") \
-                .gte("created_at", start_date.isoformat()) \
                 .eq("maintenance_company_id", user_id) \
+                .in_("status", ["filtered", "in_progress", "resolved"]) \
+                .gte("created_at", start_date.isoformat()) \
                 .execute()
             complaints = response.data or []
             break  # success, exit loop
@@ -453,6 +461,7 @@ def get_projects_over_time_of_user(user_id:str, timeline: int):
             if dt in all_days:
                 all_days[dt] += 1
 
+    print(all_days)
     return all_days
 
 def get_projects_over_time_in_range_of_user(user_id, start_date, end_date):

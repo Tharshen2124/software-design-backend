@@ -188,8 +188,8 @@ class MaintenanceCompanyAnalytics(Analytics):
     
     def setupAnalytics(self):
         assigned_raw = analytics.get_status_projects_of_user(self.user_id, "approved")
-        in_progress = analytics.get_status_projects(self.user_id, "in_progress")
-        resolved = analytics.get_status_projects(self.user_id, "resolved")
+        in_progress = analytics.get_status_projects_of_user(self.user_id, "in_progress")
+        resolved = analytics.get_status_projects_of_user(self.user_id, "resolved")
         
         assigned = assigned_raw + in_progress + resolved  # total assigned projects
         summary = {
@@ -286,5 +286,5 @@ class GovtBodyAnalytics(Analytics):
             "summary": summary,
             "complaints_over_time": projects_over_time,
             "status_breakdown": status_breakdown,
-            #"resolution_rate": resolution_rate
+            "resolution_rate": resolution_rate
         }
