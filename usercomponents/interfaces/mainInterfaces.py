@@ -47,10 +47,9 @@ class AdminComponent(UserComponentFactory):
         return AdminDashboard()
     
     def createAnalytics(self) -> Analytics:
-        user_id = self.request.GET.get("user_id")
         timeline = self.request.GET.get("timeline", "30days").lower()
         year = self.request.GET.get("year")
-        return AdminAnalytics(user_id, timeline, year)
+        return AdminAnalytics( timeline, year)
     
 class MaintenanceCompanyComponent(UserComponentFactory):
     def __init__(self, request):
@@ -60,9 +59,10 @@ class MaintenanceCompanyComponent(UserComponentFactory):
         return MaintenanceCompanyDashboard()
     
     def createAnalytics(self) -> Analytics:
+        user_id = self.request.GET.get("user_id")
         timeline = self.request.GET.get("timeline", "30days").lower()
         year = self.request.GET.get("year")
-        return MaintenanceCompanyAnalytics(timeline, year)
+        return MaintenanceCompanyAnalytics(user_id, timeline, year)
     
 class GovtBodyComponent(UserComponentFactory):
     def __init__(self, request):
