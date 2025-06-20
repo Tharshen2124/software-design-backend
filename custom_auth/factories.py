@@ -48,9 +48,9 @@ class CreateMaintenanceCompany(UserFactory):
 class CreateGovtBody(UserFactory):
     def create_user(self, user_id):
         self.supabase.table("users").update({"role": "govt_body"}).eq("id", user_id).execute()
-        if not self._record_exists("government_bodies", "government_body_id", user_id):
+        if not self._record_exists("government_bodies", "goverment_body_id", user_id):
             self.supabase.table("government_bodies").insert({
-                "government_body_id": user_id
+                "goverment_body_id": user_id
             }).execute()
 
         return user_id
